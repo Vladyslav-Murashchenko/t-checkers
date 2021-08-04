@@ -1,0 +1,32 @@
+.square {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.white {
+  background: white;
+}
+
+.black {
+  background: black;
+}
+
+.checker {
+  box-sizing: border-box;
+  content: "";
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: move;
+}
+
+.checker.black {
+  border: 3px solid white;
+}
+
+.list {
+  display: flex;
+}
