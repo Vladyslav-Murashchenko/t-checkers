@@ -1,8 +1,10 @@
 /**
  * util for composing classNames
  */
-const cx = (...classNames: string[]) => {
-  return classNames.filter(Boolean).join(" ");
+const cx = (...classNames: any[]): string => {
+  return classNames
+    .filter((className) => className && typeof className === "string")
+    .join(" ");
 };
 
 export default cx;

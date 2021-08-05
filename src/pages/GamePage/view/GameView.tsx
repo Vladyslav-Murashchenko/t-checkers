@@ -1,22 +1,34 @@
 import type { FC } from "react";
 import cx from "../../../utils/cx";
-import type { BoardModel } from "../model";
+import { derivePossibleMoveTargets, GameModel } from "../model";
 import Rank from "./Rank";
 
 import styles from "./GameView.module.css";
+import { useMemo } from "react";
 
 type GameViewProps = {
-  boardModel: BoardModel;
+  game: GameModel;
 };
 
-const GameView: FC<GameViewProps> = ({ boardModel }) => {
+const GameView: FC<GameViewProps> = ({ game }) => {
+  const { activeCheckerCoords, board } = game;
+
+  const possibleMoves = useMemo(() => {
+    return derivePossibleMoveTargets(activeCheckerCoords, board);
+  }, [activeCheckerCoords, board]);
+
   return (
     <main className={styles.main}>
       <ul className={cx("resetList", styles.list)}>
-        {boardModel.map((rank, i) => {
+        {board.map((rank, index) => {
           return (
-            <li key={i}>
-              <Rank rank={rank} />
+            <li key={index}>
+              <Rank
+                rank={rank}
+                rankIndex={index}
+                possibleMoves={possibleMoves}
+                activeCheckerCoords={activeCheckerCoords}
+              />
             </li>
           );
         })}

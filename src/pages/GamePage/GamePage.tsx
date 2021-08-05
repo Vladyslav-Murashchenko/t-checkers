@@ -1,13 +1,21 @@
 import { useReducer } from "react";
 
-import { initialBoardModel } from "./model";
+import { initialGameModel } from "./model";
 import GameView from "./view";
 import gameReducer from "./update";
+import { GameDispatchContent } from "./hooks/useGameDispatch";
+import useComputerAI from "./hooks/useComputerAI";
 
 const Game = () => {
-  const [boardModel] = useReducer(gameReducer, initialBoardModel);
+  const [game, dispatch] = useReducer(gameReducer, initialGameModel);
 
-  return <GameView boardModel={boardModel} />;
+  useComputerAI(game, dispatch);
+
+  return (
+    <GameDispatchContent.Provider value={dispatch}>
+      <GameView game={game} />
+    </GameDispatchContent.Provider>
+  );
 };
 
 export default Game;

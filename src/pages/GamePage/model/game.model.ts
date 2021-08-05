@@ -13,7 +13,3 @@ export const initialGameModel = {
 };
 
 export type GameModel = typeof initialGameModel;
-
-export { SquareModel } from "./board.model";
-export type { RankModel, BoardModel, Coords } from "./board.model";
-export * from "./derivations";
