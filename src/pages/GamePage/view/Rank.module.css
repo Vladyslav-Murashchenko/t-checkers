@@ -35,6 +35,14 @@
   background: blue;
 }
 
+.jumpIsPossible::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: crimson;
+}
+
 .squareActive {
   background: darkblue;
 }

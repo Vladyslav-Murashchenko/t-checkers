@@ -1,19 +1,16 @@
-import { initialBoardModel, initialCoords } from "./board.model";
+export type { GameModel } from "./game.model";
+export { initialGameModel } from "./game.model";
 
-export enum TurnModel {
-  white = "white",
-  black = "black",
-}
+export type { RankModel, BoardData } from "./board.model";
+export { TurnModel, findAllPossibleMovingsForTurn } from "./board.model";
 
-export const initialGameModel = {
-  turnOfPlayer: TurnModel.black,
-  moveTurn: TurnModel.black,
-  activeCheckerCoords: initialCoords,
-  board: initialBoardModel,
-};
+export { checkSquare, SquareModel } from "./square.model";
 
-export type GameModel = typeof initialGameModel;
-
-export { SquareModel } from "./board.model";
-export type { RankModel, BoardModel, Coords } from "./board.model";
-export * from "./derivations";
+export type { Coords, MoveSnapshot } from "./coords.model";
+export {
+  nullCoords,
+  checkCoords,
+  getCoordsMonitor,
+  createCoords,
+  createMoveShapshot,
+} from "./coords.model";

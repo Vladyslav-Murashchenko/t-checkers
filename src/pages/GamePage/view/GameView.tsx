@@ -1,21 +1,27 @@
 import type { FC } from "react";
-import cx from "../../../utils/cx";
-import { derivePossibleMoveTargets, GameModel } from "../model";
+import cx from "utils/cx";
+import { checkCoords, Coords, GameModel, MoveSnapshot } from "../model";
 import Rank from "./Rank";
 
 import styles from "./GameView.module.css";
-import { useMemo } from "react";
+import { findAllPossibleMovingsForTurn } from "../model";
 
 type GameViewProps = {
   game: GameModel;
 };
 
 const GameView: FC<GameViewProps> = ({ game }) => {
-  const { activeCheckerCoords, board } = game;
+  const { board, activeCheckerCoords } = game;
 
-  const possibleMoves = useMemo(() => {
-    return derivePossibleMoveTargets(activeCheckerCoords, board);
-  }, [activeCheckerCoords, board]);
+  const { possibleJumps, possibleMoves } = findAllPossibleMovingsForTurn(game);
+
+  const possibleMoveTargets = possibleMoves
+    .filter(currentCoordsEquals(activeCheckerCoords))
+    .map(getTarget);
+
+  const possibleJumpTargets = possibleJumps
+    .filter(currentCoordsEquals(activeCheckerCoords))
+    .map(getTarget);
 
   return (
     <main className={styles.main}>
@@ -26,7 +32,8 @@ const GameView: FC<GameViewProps> = ({ game }) => {
               <Rank
                 rank={rank}
                 rankIndex={index}
-                possibleMoves={possibleMoves}
+                possibleMoves={possibleMoveTargets}
+                possibleJumps={possibleJumpTargets}
                 activeCheckerCoords={activeCheckerCoords}
               />
             </li>
@@ -38,3 +45,13 @@ const GameView: FC<GameViewProps> = ({ game }) => {
 };
 
 export default GameView;
+
+function getTarget({ to }: MoveSnapshot) {
+  return to;
+}
+
+function currentCoordsEquals(activeCheckerCoords: Coords) {
+  return ({ from }: MoveSnapshot) => {
+    return checkCoords(activeCheckerCoords).areEquals(from);
+  };
+}

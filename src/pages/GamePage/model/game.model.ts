@@ -1,15 +1,11 @@
-import { initialBoardModel, initialCoords } from "./board.model";
-
-export enum TurnModel {
-  white = "white",
-  black = "black",
-}
+import { initialBoardData, TurnModel } from "./board.model";
+import { nullCoords } from "./coords.model";
 
 export const initialGameModel = {
-  turnOfPlayer: TurnModel.black,
-  moveTurn: TurnModel.black,
-  activeCheckerCoords: initialCoords,
-  board: initialBoardModel,
+  turn: TurnModel.black,
+  jumpingCheckerCoords: nullCoords,
+  activeCheckerCoords: nullCoords,
+  board: initialBoardData,
 };
 
 export type GameModel = typeof initialGameModel;

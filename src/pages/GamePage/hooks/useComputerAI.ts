@@ -1,32 +1,33 @@
 import { useEffect } from "react";
+import { GameModel, findAllPossibleMovingsForTurn, TurnModel } from "../model";
 import {
-  deriveTurnOfComputerAI,
-  findAllPossibleMoves,
-  GameModel,
-} from "../model";
-import { makeMove } from "../update";
+  checkerJumped,
+  checkerMoved,
+  checkerTouchedByComputer,
+} from "../update";
 import { Dispatch } from "./useGameDispatch";
 
 const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
   useEffect(() => {
-    const { moveTurn, turnOfPlayer, board } = game;
+    if (game.turn === TurnModel.white) {
+      const { possibleJumps, possibleMoves } =
+        findAllPossibleMovingsForTurn(game);
 
-    const turnOfComputer = deriveTurnOfComputerAI(turnOfPlayer);
+      const randomMove = getRandomItem([...possibleJumps, ...possibleMoves]);
 
-    if (moveTurn === turnOfComputer) {
-      const allPossibleMoves = findAllPossibleMoves(turnOfComputer, board);
-
-      const randomMove = getRandomItem(allPossibleMoves);
+      dispatch(checkerTouchedByComputer(randomMove.from));
 
       let timer = setTimeout(() => {
-        dispatch(makeMove(randomMove));
+        const isJump = possibleJumps.includes(randomMove);
+        const finalAction = isJump ? checkerJumped : checkerMoved;
+        dispatch(finalAction(randomMove.to));
       }, 2000);
 
       return () => {
         clearTimeout(timer);
       };
     }
-  });
+  }, [game.turn, game.jumpingCheckerCoords]);
 };
 
 export default useComputerAI;

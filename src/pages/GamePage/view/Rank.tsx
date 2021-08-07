@@ -1,15 +1,15 @@
 import { FC } from "react";
-import cx from "../../../utils/cx";
+import cx from "utils/cx";
 import useGameDispatch from "../hooks/useGameDispatch";
-import type { RankModel, SquareModel, Coords } from "../model";
 import {
-  deriveIsPossibleMoveTarget,
-  hasChecker,
-  hasWhiteChecker,
-  isEqualCoords,
-  isWhite,
-} from "../model/derivations";
-import { checkerTouchedByPlayer, makeMove } from "../update";
+  RankModel,
+  SquareModel,
+  Coords,
+  checkSquare,
+  checkCoords,
+  createCoords,
+} from "../model";
+import { checkerTouchedByPlayer, checkerMoved, checkerJumped } from "../update";
 
 import styles from "./Rank.module.css";
 
@@ -17,6 +17,7 @@ type RankProps = {
   rank: RankModel;
   rankIndex: number;
   possibleMoves: Coords[];
+  possibleJumps: Coords[];
   activeCheckerCoords: Coords;
 };
 
@@ -24,27 +25,26 @@ const Rank: FC<RankProps> = ({
   rank,
   rankIndex,
   possibleMoves,
+  possibleJumps,
   activeCheckerCoords,
 }) => {
   const dispatch = useGameDispatch();
 
-  const handleCheckerMouseDown = (squareIndex: number) => () => {
-    const coords: Coords = [squareIndex, rankIndex];
+  const handleCheckerMouseOver = (squareIndex: number) => () => {
+    const coords = createCoords(squareIndex, rankIndex);
 
     dispatch(checkerTouchedByPlayer(coords));
   };
 
   const handleSquareMouseUp = (squareIndex: number) => () => {
-    const coords: Coords = [squareIndex, rankIndex];
-    const isOkDropTarget = deriveIsPossibleMoveTarget(coords, possibleMoves);
+    const coords = createCoords(squareIndex, rankIndex);
 
-    if (isOkDropTarget) {
-      dispatch(
-        makeMove({
-          from: activeCheckerCoords,
-          to: coords,
-        }),
-      );
+    if (checkCoords(coords).toBeIn(possibleMoves)) {
+      dispatch(checkerMoved(coords));
+    }
+
+    if (checkCoords(coords).toBeIn(possibleJumps)) {
+      dispatch(checkerJumped(coords));
     }
   };
 
@@ -56,6 +56,7 @@ const Rank: FC<RankProps> = ({
           squareIndex,
           rankIndex,
           possibleMoves,
+          possibleJumps,
           activeCheckerCoords,
         });
 
@@ -65,10 +66,10 @@ const Rank: FC<RankProps> = ({
             className={squareClassName}
             onMouseUp={handleSquareMouseUp(squareIndex)}
           >
-            {hasChecker(square) && (
+            {checkSquare(square).hasChecker() && (
               <div
                 className={checkerClassName(square)}
-                onMouseDown={handleCheckerMouseDown(squareIndex)}
+                onMouseOver={handleCheckerMouseOver(squareIndex)}
               />
             )}
           </li>
@@ -90,6 +91,7 @@ type DeriveSquareClassNameParams = {
   squareIndex: number;
   rankIndex: number;
   possibleMoves: Coords[];
+  possibleJumps: Coords[];
   activeCheckerCoords: Coords;
 };
 function deriveSquareClassName({
@@ -97,19 +99,22 @@ function deriveSquareClassName({
   squareIndex,
   rankIndex,
   possibleMoves,
+  possibleJumps,
   activeCheckerCoords,
 }: DeriveSquareClassNameParams): string {
-  const coords: Coords = [squareIndex, rankIndex];
-  const isPossibleTarget = deriveIsPossibleMoveTarget(coords, possibleMoves);
-  const isActive = isEqualCoords(activeCheckerCoords, coords);
+  const coords = createCoords(squareIndex, rankIndex);
+  const isPossibleTarget = checkCoords(coords).toBeIn(possibleMoves);
+  const isPossibleJump = checkCoords(coords).toBeIn(possibleJumps);
+  const isActive = checkCoords(coords).areEquals(activeCheckerCoords);
 
   return cx(
-    isWhite(square) ? whiteSquare : blackSquare,
+    checkSquare(square).isWhite() ? whiteSquare : blackSquare,
     isPossibleTarget && styles.moveIsPossible,
+    isPossibleJump && styles.jumpIsPossible,
     isActive && styles.squareActive,
   );
 }
 
 function checkerClassName(square: SquareModel) {
-  return hasWhiteChecker(square) ? whiteChecker : blackChecker;
+  return checkSquare(square).hasWhiteChecker() ? whiteChecker : blackChecker;
 }
