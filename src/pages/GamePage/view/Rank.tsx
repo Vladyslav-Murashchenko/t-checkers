@@ -30,7 +30,7 @@ const Rank: FC<RankProps> = ({
 }) => {
   const dispatch = useGameDispatch();
 
-  const handleCheckerMouseOver = (squareIndex: number) => () => {
+  const handleCheckerMouseDown = (squareIndex: number) => () => {
     const coords = createCoords(squareIndex, rankIndex);
 
     dispatch(checkerTouchedByPlayer(coords));
@@ -65,11 +65,14 @@ const Rank: FC<RankProps> = ({
             key={squareIndex}
             className={squareClassName}
             onMouseUp={handleSquareMouseUp(squareIndex)}
+            onTouchEnd={handleSquareMouseUp(squareIndex)}
           >
             {checkSquare(square).hasChecker() && (
               <div
                 className={checkerClassName(square)}
-                onMouseOver={handleCheckerMouseOver(squareIndex)}
+                onMouseDown={handleCheckerMouseDown(squareIndex)}
+                onMouseOver={handleCheckerMouseDown(squareIndex)}
+                onTouchStart={handleCheckerMouseDown(squareIndex)}
               />
             )}
           </li>
