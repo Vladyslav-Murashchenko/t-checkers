@@ -16,16 +16,16 @@ import styles from "./Rank.module.css";
 type RankProps = {
   rank: RankModel;
   rankIndex: number;
-  possibleMoves: Coords[];
-  possibleJumps: Coords[];
+  possibleMoveTargets: Coords[];
+  possibleJumpTargets: Coords[];
   activeCheckerCoords: Coords;
 };
 
 const Rank: FC<RankProps> = ({
   rank,
   rankIndex,
-  possibleMoves,
-  possibleJumps,
+  possibleMoveTargets,
+  possibleJumpTargets,
   activeCheckerCoords,
 }) => {
   const dispatch = useGameDispatch();
@@ -39,11 +39,11 @@ const Rank: FC<RankProps> = ({
   const handleSquareMouseUp = (squareIndex: number) => () => {
     const coords = createCoords(squareIndex, rankIndex);
 
-    if (checkCoords(coords).toBeIn(possibleMoves)) {
+    if (checkCoords(coords).toBeIn(possibleMoveTargets)) {
       dispatch(checkerMoved(coords));
     }
 
-    if (checkCoords(coords).toBeIn(possibleJumps)) {
+    if (checkCoords(coords).toBeIn(possibleJumpTargets)) {
       dispatch(checkerJumped(coords));
     }
   };
@@ -55,8 +55,8 @@ const Rank: FC<RankProps> = ({
           square,
           squareIndex,
           rankIndex,
-          possibleMoves,
-          possibleJumps,
+          possibleMoveTargets,
+          possibleJumpTargets,
           activeCheckerCoords,
         });
 
@@ -90,21 +90,22 @@ type DeriveSquareClassNameParams = {
   square: SquareModel;
   squareIndex: number;
   rankIndex: number;
-  possibleMoves: Coords[];
-  possibleJumps: Coords[];
+  possibleMoveTargets: Coords[];
+  possibleJumpTargets: Coords[];
   activeCheckerCoords: Coords;
 };
 function deriveSquareClassName({
   square,
   squareIndex,
   rankIndex,
-  possibleMoves,
-  possibleJumps,
+  possibleMoveTargets,
+  possibleJumpTargets,
   activeCheckerCoords,
 }: DeriveSquareClassNameParams): string {
   const coords = createCoords(squareIndex, rankIndex);
-  const isPossibleTarget = checkCoords(coords).toBeIn(possibleMoves);
-  const isPossibleJump = checkCoords(coords).toBeIn(possibleJumps);
+
+  const isPossibleTarget = checkCoords(coords).toBeIn(possibleMoveTargets);
+  const isPossibleJump = checkCoords(coords).toBeIn(possibleJumpTargets);
   const isActive = checkCoords(coords).areEquals(activeCheckerCoords);
 
   return cx(

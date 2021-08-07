@@ -32,8 +32,8 @@ const GameView: FC<GameViewProps> = ({ game }) => {
               <Rank
                 rank={rank}
                 rankIndex={index}
-                possibleMoves={possibleMoveTargets}
-                possibleJumps={possibleJumpTargets}
+                possibleMoveTargets={possibleMoveTargets}
+                possibleJumpTargets={possibleJumpTargets}
                 activeCheckerCoords={activeCheckerCoords}
               />
             </li>
