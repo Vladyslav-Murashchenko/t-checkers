@@ -12,5 +12,4 @@ export {
   checkCoords,
   getCoordsMonitor,
   createCoords,
-  createMoveShapshot,
 } from "./coords.model";

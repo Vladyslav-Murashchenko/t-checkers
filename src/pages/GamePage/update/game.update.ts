@@ -10,6 +10,7 @@ import {
   Coords,
   nullCoords,
 } from "../model";
+import { getSquareMonitor } from "../model/square.model";
 
 const nextTurnByCurrent = {
   [TurnModel.black]: TurnModel.white,
@@ -29,7 +30,7 @@ const gameSlice = createSlice({
 
       const squareMonitor = getCoordsMonitor(coords, board);
 
-      if (turn === TurnModel.black && squareMonitor?.hasPlayerChecker()) {
+      if (turn === TurnModel.black && squareMonitor?.hasBlackChecker()) {
         state.activeCheckerCoords = coords;
       }
     },
@@ -37,7 +38,7 @@ const gameSlice = createSlice({
       const from = state.activeCheckerCoords;
       const to = action.payload;
 
-      state.board = makeMove(from, to, state.board);
+      state.board = makeMoveAndMaybeBecomeKing(from, to, state.board);
       state.turn = nextTurnByCurrent[state.turn];
       state.activeCheckerCoords = nullCoords;
     },
@@ -48,7 +49,7 @@ const gameSlice = createSlice({
       const [capturedX, capturedY] = getCoordsOfCapturedPiece(from, to);
       state.board[capturedY][capturedX] = SquareModel.emptyBlack;
 
-      const updatedBoard = makeMove(from, to, state.board);
+      const updatedBoard = makeMoveAndMaybeBecomeKing(from, to, state.board);
       state.board = updatedBoard;
 
       const monitor = getCoordsMonitor(to, updatedBoard);
@@ -76,12 +77,33 @@ export const {
   checkerJumped,
 } = gameSlice.actions;
 
-function makeMove(from: Coords, to: Coords, board: BoardData): BoardData {
+function makeMoveAndMaybeBecomeKing(
+  from: Coords,
+  to: Coords,
+  board: BoardData,
+): BoardData {
   const [fromX, fromY] = from;
   const [toX, toY] = to;
 
+  let square = board[fromY][fromX];
+  const squareTurn = getSquareMonitor(square).getTurn();
+
+  const kingRowByTurn = {
+    [TurnModel.black]: 0,
+    [TurnModel.white]: 7,
+  };
+
+  const kingByTurn = {
+    [TurnModel.black]: SquareModel.withBlackKing,
+    [TurnModel.white]: SquareModel.withWhiteKing,
+  };
+
+  if (squareTurn && kingRowByTurn[squareTurn] === toY) {
+    square = kingByTurn[squareTurn];
+  }
+
   return createNextState(board, (draftBoard) => {
-    draftBoard[toY][toX] = board[fromY][fromX];
+    draftBoard[toY][toX] = square;
     draftBoard[fromY][fromX] = SquareModel.emptyBlack;
   });
 }

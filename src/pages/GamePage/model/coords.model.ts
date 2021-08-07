@@ -1,6 +1,6 @@
 import zip from "utils/zip";
-import { BoardData, TurnModel } from "./board.model";
-import { checkSquare, SquareModel } from "./square.model";
+import { BoardData } from "./board.model";
+import { getSquareMonitor } from "./square.model";
 
 export type Coords<X = number, Y = number> = [X, Y];
 export const nullCoords: Coords = [-1, -1];
@@ -21,6 +21,11 @@ export const checkCoords = (coords: Coords) => ({
   },
 });
 
+export type MoveSnapshot = {
+  from: Coords;
+  to: Coords;
+};
+
 export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
   const [x, y] = coords;
   const square = board[y]?.[x] ?? null;
@@ -29,30 +34,19 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
     return null;
   }
 
-  const squareMonitor = checkSquare(square);
+  const squareMonitor = getSquareMonitor(square);
 
   const self = Object.assign(squareMonitor, {
-    getSquare: (): SquareModel => square,
-    getTurn(): TurnModel | null {
-      const turnBySquare = {
-        [SquareModel.withBlackChecker]: TurnModel.black,
-        [SquareModel.withWhiteChecker]: TurnModel.white,
-        [SquareModel.white]: null,
-        [SquareModel.emptyBlack]: null,
-      };
-
-      return turnBySquare[self.getSquare()];
-    },
     findMoves(): MoveSnapshot[] {
-      const coordsOfNextBlackSquares: Coords[] = findCoordsOnDistance(1);
+      const nextBlackSquares: Coords[] = findCoordsOnDistance(1, coords, board);
 
-      return coordsOfNextBlackSquares
+      return nextBlackSquares
         .filter((next) => getCoordsMonitor(next, board)?.isEmptyBlack())
         .map(createMoveShapshot(coords));
     },
     findJumps(): MoveSnapshot[] {
-      const maybeOpponentCoords = findCoordsOnDistance(1);
-      const maybeEmptyCoords = findCoordsOnDistance(2);
+      const maybeOpponentCoords = findCoordsOnDistance(1, coords, board);
+      const maybeEmptyCoords = findCoordsOnDistance(2, coords, board);
 
       const pairs = zip(maybeOpponentCoords, maybeEmptyCoords);
 
@@ -77,32 +71,45 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
   });
 
   return self;
-
-  function getForbiddenDirection() {
-    return self.hasWhiteChecker() ? "top" : "bottom";
-  }
-
-  function findCoordsOnDistance(distance: number) {
-    const forbiddenDirection = getForbiddenDirection();
-    const coordsOnDiagonals: Coords[] = [];
-
-    if (forbiddenDirection !== "top") {
-      coordsOnDiagonals.push(
-        move(coords, "top", "right", distance),
-        move(coords, "top", "left", distance),
-      );
-    }
-
-    if (forbiddenDirection !== "bottom") {
-      coordsOnDiagonals.push(
-        move(coords, "bottom", "right", distance),
-        move(coords, "bottom", "left", distance),
-      );
-    }
-
-    return coordsOnDiagonals;
-  }
 };
+
+function getForbiddenDirection(
+  coords: Coords,
+  board: BoardData,
+): "top" | "bottom" | null {
+  const coordsMonitor = getCoordsMonitor(coords, board);
+
+  if (!coordsMonitor || coordsMonitor.hasKing()) {
+    return null;
+  }
+
+  return coordsMonitor.hasWhiteChecker() ? "top" : "bottom";
+}
+
+function findCoordsOnDistance(
+  distance: number,
+  coords: Coords,
+  board: BoardData,
+): Coords[] {
+  const forbiddenDirection = getForbiddenDirection(coords, board);
+  const coordsOnDiagonals: Coords[] = [];
+
+  if (forbiddenDirection !== "top") {
+    coordsOnDiagonals.push(
+      move(coords, "top", "right", distance),
+      move(coords, "top", "left", distance),
+    );
+  }
+
+  if (forbiddenDirection !== "bottom") {
+    coordsOnDiagonals.push(
+      move(coords, "bottom", "right", distance),
+      move(coords, "bottom", "left", distance),
+    );
+  }
+
+  return coordsOnDiagonals;
+}
 
 const signByDirection = {
   top: -1,
@@ -126,12 +133,7 @@ function move(
   return [x + deltaX, y + deltaY];
 }
 
-export type MoveSnapshot = {
-  from: Coords;
-  to: Coords;
-};
-
-export function createMoveShapshot(from: Coords) {
+function createMoveShapshot(from: Coords) {
   return (to: Coords): MoveSnapshot => ({
     from,
     to,

@@ -15,8 +15,10 @@ export enum TurnModel {
 
 type BlackSquare =
   | SquareModel.emptyBlack
-  | SquareModel.withWhiteChecker
-  | SquareModel.withBlackChecker;
+  | SquareModel.withWhiteMan
+  | SquareModel.withWhiteKing
+  | SquareModel.withBlackMan
+  | SquareModel.withBlackKing;
 
 export type BoardData<X = BlackSquare, O = SquareModel.white> = [
   [O, X, O, X, O, X, O, X],
@@ -32,8 +34,8 @@ export type BoardData<X = BlackSquare, O = SquareModel.white> = [
 export type RankModel<S = SquareModel> = [S, S, S, S, S, S, S, S];
 
 const _ = SquareModel.white;
-const W = SquareModel.withWhiteChecker;
-const B = SquareModel.withBlackChecker;
+const W = SquareModel.withWhiteMan;
+const B = SquareModel.withBlackMan;
 const E = SquareModel.emptyBlack;
 
 export const initialBoardData: BoardData = [
