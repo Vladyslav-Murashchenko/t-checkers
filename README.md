@@ -1,6 +1,6 @@
-# Checkers game
+# English draughts (American 8×8 checkers)
 
-<mark>For understanding this codebase, it is important to understand [Checkers Terminology](https://www.checkershistory.com/a-glossary-of-checkers.html) and [Elm Arhitecture](https://guide.elm-lang.org/architecture/)</mark>
+<mark>For understanding this codebase, it is good to understand [Checkers Terminology](https://www.checkershistory.com/a-glossary-of-checkers.html) and [Elm Arhitecture](https://guide.elm-lang.org/architecture/)</mark>
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -1,3 +1,8 @@
+/**
+ * @description
+ * Creates a new list out of the two supplied by pairing up
+ * equally-positioned items from both lists.
+ */
 function zip<T extends unknown[], P extends unknown[]>(arr1: T[], arr2: P[]) {
   const newArr: [T, P][] = [];
   const minLength = Math.min(arr1.length, arr2.length);
