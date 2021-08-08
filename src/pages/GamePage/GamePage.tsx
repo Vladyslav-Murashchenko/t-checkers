@@ -5,7 +5,7 @@ import GameView from "./view";
 import gameReducer from "./update";
 import { GameDispatchContent } from "./hooks/useGameDispatch";
 import useComputerAI from "./hooks/useComputerAI";
-import gamePersistService from "./services/persistGameState";
+import gamePersistService from "./services/gamePersistService";
 import { useEffect } from "react";
 
 const Game = () => {
