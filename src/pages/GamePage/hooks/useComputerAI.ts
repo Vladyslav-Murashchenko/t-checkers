@@ -26,7 +26,7 @@ const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
         const isJump = possibleJumps.includes(randomMove);
         const finalAction = isJump ? checkerJumped : checkerMoved;
         dispatch(finalAction(randomMove.to));
-      }, 2000);
+      }, 800);
 
       return () => {
         clearTimeout(timer);
