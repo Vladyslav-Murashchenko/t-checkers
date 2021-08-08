@@ -5,11 +5,21 @@ import GameView from "./view";
 import gameReducer from "./update";
 import { GameDispatchContent } from "./hooks/useGameDispatch";
 import useComputerAI from "./hooks/useComputerAI";
+import gamePersistService from "./services/persistGameState";
+import { useEffect } from "react";
 
 const Game = () => {
-  const [game, dispatch] = useReducer(gameReducer, initialGameModel);
+  const [game, dispatch] = useReducer(
+    gameReducer,
+    initialGameModel,
+    gamePersistService.initReducer,
+  );
 
   useComputerAI(game, dispatch);
+
+  useEffect(() => {
+    gamePersistService.persist(game);
+  });
 
   return (
     <GameDispatchContent.Provider value={dispatch}>
