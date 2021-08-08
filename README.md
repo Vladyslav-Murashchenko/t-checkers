@@ -1,6 +1,6 @@
 # English draughts (American 8×8 checkers)
 
-<mark>For understanding this codebase, it is good to understand [Checkers Terminology](https://www.checkershistory.com/a-glossary-of-checkers.html) and [Elm Arhitecture](https://guide.elm-lang.org/architecture/)</mark>
+Understanding of [Checkers Terminology](https://www.checkershistory.com/a-glossary-of-checkers.html) and [Elm Arhitecture](https://guide.elm-lang.org/architecture/) can be useful for understanding this codebase. You can find more details about the approach here: /src/pages/GamePage/README.md
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -15,11 +15,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn build`
 
