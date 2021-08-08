@@ -63,28 +63,28 @@ const gameSlice = createSlice({
       const monitor = getCoordsMonitor(to, updatedBoard);
       const hasJumps = !!monitor?.findJumps().length;
 
-      const sideOfOpponent = opponentFor[state.turn];
-      const hasOpponentMovings = hasSideMovings({
-        side: sideOfOpponent,
-        board: updatedBoard,
-        jumpingCheckerCoords: state.activeCheckerCoords,
-      });
-
-      if (!hasOpponentMovings && !hasJumps) {
-        state.status = Status.finished;
-        state.activeCheckerCoords = nullCoords;
-        return;
-      }
-
       if (hasJumps) {
         state.activeCheckerCoords = to;
         state.jumpingCheckerCoords = to;
         return;
       }
 
-      state.turn = opponentFor[state.turn];
+      const sideOfOpponent = opponentFor[state.turn];
+      const hasOpponentMovings = hasSideMovings({
+        side: sideOfOpponent,
+        board: updatedBoard,
+        jumpingCheckerCoords: nullCoords,
+      });
+
+      if (hasOpponentMovings) {
+        state.turn = sideOfOpponent;
+        state.activeCheckerCoords = nullCoords;
+        state.jumpingCheckerCoords = nullCoords;
+        return;
+      }
+
+      state.status = Status.finished;
       state.activeCheckerCoords = nullCoords;
-      state.jumpingCheckerCoords = nullCoords;
     }),
   },
 });
