@@ -26,6 +26,7 @@ const gameSlice = createSlice({
   name: "game",
   initialState: initialGameModel,
   reducers: {
+    restart: () => initialGameModel,
     checkerTouchedByComputer: whenPlaying((state, action) => {
       state.activeCheckerCoords = action.payload;
     }),
@@ -90,6 +91,7 @@ const gameSlice = createSlice({
 
 export default gameSlice.reducer;
 export const {
+  restart,
   checkerTouchedByPlayer,
   checkerTouchedByComputer,
   checkerMoved,
