@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { GameModel, findAllPossibleMovingsForTurn, TurnModel } from "../model";
+import { GameModel, findAllMovingsForSide, Side } from "../model";
 import {
   checkerJumped,
   checkerMoved,
@@ -9,9 +9,13 @@ import { Dispatch } from "./useGameDispatch";
 
 const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
   useEffect(() => {
-    if (game.turn === TurnModel.white) {
-      const { possibleJumps, possibleMoves } =
-        findAllPossibleMovingsForTurn(game);
+    const { turn, jumpingCheckerCoords, board } = game;
+    if (game.turn === Side.white) {
+      const { possibleJumps, possibleMoves } = findAllMovingsForSide({
+        side: turn,
+        board,
+        jumpingCheckerCoords,
+      });
 
       const randomMove = getRandomItem([...possibleJumps, ...possibleMoves]);
 

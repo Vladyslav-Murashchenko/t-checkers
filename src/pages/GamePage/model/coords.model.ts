@@ -5,9 +5,7 @@ import { getSquareMonitor } from "./square.model";
 export type Coords<X = number, Y = number> = [X, Y];
 export const nullCoords: Coords = [-1, -1];
 
-export const createCoords = (x: number, y: number): Coords => {
-  return [x, y];
-};
+export const createCoords = (x: number, y: number): Coords => [x, y];
 
 export const checkCoords = (coords: Coords) => ({
   areEquals: (anotherCoords: Coords) => {
@@ -58,7 +56,7 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
           if (opponentCoords && emptyCoords && opponentCoords.hasChecker()) {
             const hasEmptySquare = emptyCoords.isEmptyBlack();
             const hasOpponentChecker =
-              opponentCoords.getTurn() !== self.getTurn();
+              opponentCoords.getSide() !== self.getSide();
 
             return hasOpponentChecker && hasEmptySquare;
           }

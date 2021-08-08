@@ -1,11 +1,15 @@
-.main {
+.wrapper {
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .list {
   border: 4px solid white;
-  box-shadow: 0 0 0 20px black;
+}
+
+.main {
+  border: 20px solid black;
 }

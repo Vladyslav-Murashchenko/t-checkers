@@ -1,9 +1,9 @@
 export type { GameModel } from "./game.model";
-export { initialGameModel, findAllPossibleMovingsForTurn } from "./game.model";
+export { initialGameModel, findAllMovingsForSide } from "./game.model";
 
 export type { RankModel, BoardData } from "./board.model";
 
-export { checkSquare, SquareModel } from "./square.model";
+export { checkSquare, SquareModel, getSquareMonitor } from "./square.model";
 
 export type { Coords, MoveSnapshot } from "./coords.model";
 export {
@@ -13,4 +13,6 @@ export {
   getCoordsMonitor,
 } from "./coords.model";
 
-export { Turn } from "./turn.model";
+export { Side } from "./side.model";
+
+export { Status } from "./status.model";

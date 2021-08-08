@@ -1,4 +1,4 @@
-import { Turn } from "./turn.model";
+import { Side } from "./side.model";
 
 export enum SquareModel {
   white = "_",
@@ -21,13 +21,13 @@ export const checkSquare = (square: SquareModel) => {
     hasWhiteChecker: () => is(SquareModel.withWhiteMan) || self.hasWhiteKing(),
     hasBlackChecker: () => is(SquareModel.withBlackMan) || self.hasBlackKing(),
     hasChecker: () => self.hasWhiteChecker() || self.hasBlackChecker(),
-    isOwnedBy: (turn: Turn) => {
-      const isOwnedByTurn = {
-        [Turn.white]: self.hasWhiteChecker,
-        [Turn.black]: self.hasBlackChecker,
+    isOwnedBy: (side: Side) => {
+      const isOwnedBySide = {
+        [Side.white]: self.hasWhiteChecker,
+        [Side.black]: self.hasBlackChecker,
       };
 
-      return isOwnedByTurn[turn]();
+      return isOwnedBySide[side]();
     },
   };
 
@@ -36,12 +36,12 @@ export const checkSquare = (square: SquareModel) => {
 
 export const getSquareMonitor = (square: SquareModel) => {
   return Object.assign(checkSquare(square), {
-    getTurn(): Turn | null {
+    getSide(): Side | null {
       const turnBySquare = {
-        [SquareModel.withBlackMan]: Turn.black,
-        [SquareModel.withBlackKing]: Turn.black,
-        [SquareModel.withWhiteMan]: Turn.white,
-        [SquareModel.withWhiteKing]: Turn.white,
+        [SquareModel.withBlackMan]: Side.black,
+        [SquareModel.withBlackKing]: Side.black,
+        [SquareModel.withWhiteMan]: Side.white,
+        [SquareModel.withWhiteKing]: Side.white,
         [SquareModel.white]: null,
         [SquareModel.emptyBlack]: null,
       };

@@ -5,44 +5,51 @@ import {
   BoardData,
   initialGameModel,
   SquareModel,
-  Turn,
+  Side,
   getCoordsMonitor,
   Coords,
   nullCoords,
+  getSquareMonitor,
+  Status,
 } from "../model";
-import { getSquareMonitor } from "../model/square.model";
+import whenStatus from "utils/whenStatus";
+import { hasSideMovings } from "../model/game.model";
 
-const nextTurnByCurrent = {
-  [Turn.black]: Turn.white,
-  [Turn.white]: Turn.black,
+const opponentFor = {
+  [Side.black]: Side.white,
+  [Side.white]: Side.black,
 };
+
+const whenPlaying = whenStatus((status) => status === Status.playing);
 
 const gameSlice = createSlice({
   name: "game",
   initialState: initialGameModel,
   reducers: {
-    checkerTouchedByComputer: (state, action) => {
+    checkerTouchedByComputer: whenPlaying((state, action) => {
       state.activeCheckerCoords = action.payload;
-    },
-    checkerTouchedByPlayer: (state, action: PayloadAction<Coords>) => {
-      const coords = action.payload;
-      const { turn, board } = state;
+    }),
+    checkerTouchedByPlayer: whenPlaying(
+      (state, action: PayloadAction<Coords>) => {
+        const coords = action.payload;
+        const { turn, board } = state;
 
-      const squareMonitor = getCoordsMonitor(coords, board);
+        const squareMonitor = getCoordsMonitor(coords, board);
 
-      if (turn === Turn.black && squareMonitor?.hasBlackChecker()) {
-        state.activeCheckerCoords = coords;
-      }
-    },
-    checkerMoved: (state, action: PayloadAction<Coords>) => {
+        if (turn === Side.black && squareMonitor?.hasBlackChecker()) {
+          state.activeCheckerCoords = coords;
+        }
+      },
+    ),
+    checkerMoved: whenPlaying((state, action: PayloadAction<Coords>) => {
       const from = state.activeCheckerCoords;
       const to = action.payload;
 
       state.board = makeMoveAndMaybeBecomeKing(from, to, state.board);
-      state.turn = nextTurnByCurrent[state.turn];
+      state.turn = opponentFor[state.turn];
       state.activeCheckerCoords = nullCoords;
-    },
-    checkerJumped: (state, action: PayloadAction<Coords>) => {
+    }),
+    checkerJumped: whenPlaying((state, action: PayloadAction<Coords>) => {
       const from = state.activeCheckerCoords;
       const to = action.payload;
 
@@ -53,8 +60,20 @@ const gameSlice = createSlice({
       state.board = updatedBoard;
 
       const monitor = getCoordsMonitor(to, updatedBoard);
-
       const hasJumps = !!monitor?.findJumps().length;
+
+      const sideOfOpponent = opponentFor[state.turn];
+      const hasOpponentMovings = hasSideMovings({
+        side: sideOfOpponent,
+        board: updatedBoard,
+        jumpingCheckerCoords: state.activeCheckerCoords,
+      });
+
+      if (!hasOpponentMovings && !hasJumps) {
+        state.status = Status.finished;
+        state.activeCheckerCoords = nullCoords;
+        return;
+      }
 
       if (hasJumps) {
         state.activeCheckerCoords = to;
@@ -62,10 +81,10 @@ const gameSlice = createSlice({
         return;
       }
 
-      state.turn = nextTurnByCurrent[state.turn];
+      state.turn = opponentFor[state.turn];
       state.activeCheckerCoords = nullCoords;
       state.jumpingCheckerCoords = nullCoords;
-    },
+    }),
   },
 });
 
@@ -85,21 +104,21 @@ function makeMoveAndMaybeBecomeKing(
   const [fromX, fromY] = from;
   const [toX, toY] = to;
 
-  const kingRowByTurn = {
-    [Turn.black]: 0,
-    [Turn.white]: 7,
+  const kingRowBySide = {
+    [Side.black]: 0,
+    [Side.white]: 7,
   };
 
-  const kingByTurn = {
-    [Turn.black]: SquareModel.withBlackKing,
-    [Turn.white]: SquareModel.withWhiteKing,
+  const kingBySide = {
+    [Side.black]: SquareModel.withBlackKing,
+    [Side.white]: SquareModel.withWhiteKing,
   };
 
   let square = board[fromY][fromX];
-  const squareTurn = getSquareMonitor(square).getTurn();
+  const squareSide = getSquareMonitor(square).getSide();
 
-  if (squareTurn && kingRowByTurn[squareTurn] === toY) {
-    square = kingByTurn[squareTurn];
+  if (squareSide && kingRowBySide[squareSide] === toY) {
+    square = kingBySide[squareSide];
   }
 
   return createNextState(board, (draftBoard) => {
