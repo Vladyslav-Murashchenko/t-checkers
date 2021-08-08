@@ -1,4 +1,4 @@
-export enum TurnModel {
+export enum Turn {
   white = "white",
   black = "black",
 }

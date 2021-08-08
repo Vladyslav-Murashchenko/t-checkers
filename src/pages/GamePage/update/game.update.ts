@@ -5,7 +5,7 @@ import {
   BoardData,
   initialGameModel,
   SquareModel,
-  TurnModel,
+  Turn,
   getCoordsMonitor,
   Coords,
   nullCoords,
@@ -13,8 +13,8 @@ import {
 import { getSquareMonitor } from "../model/square.model";
 
 const nextTurnByCurrent = {
-  [TurnModel.black]: TurnModel.white,
-  [TurnModel.white]: TurnModel.black,
+  [Turn.black]: Turn.white,
+  [Turn.white]: Turn.black,
 };
 
 const gameSlice = createSlice({
@@ -30,7 +30,7 @@ const gameSlice = createSlice({
 
       const squareMonitor = getCoordsMonitor(coords, board);
 
-      if (turn === TurnModel.black && squareMonitor?.hasBlackChecker()) {
+      if (turn === Turn.black && squareMonitor?.hasBlackChecker()) {
         state.activeCheckerCoords = coords;
       }
     },
@@ -86,13 +86,13 @@ function makeMoveAndMaybeBecomeKing(
   const [toX, toY] = to;
 
   const kingRowByTurn = {
-    [TurnModel.black]: 0,
-    [TurnModel.white]: 7,
+    [Turn.black]: 0,
+    [Turn.white]: 7,
   };
 
   const kingByTurn = {
-    [TurnModel.black]: SquareModel.withBlackKing,
-    [TurnModel.white]: SquareModel.withWhiteKing,
+    [Turn.black]: SquareModel.withBlackKing,
+    [Turn.white]: SquareModel.withWhiteKing,
   };
 
   let square = board[fromY][fromX];
