@@ -73,7 +73,11 @@ const Rank: FC<RankProps> = ({
                 onMouseDown={handleCheckerMouseDown(squareIndex)}
                 onMouseOver={handleCheckerMouseDown(squareIndex)}
                 onTouchStart={handleCheckerMouseDown(squareIndex)}
-              />
+              >
+                {checkSquare(square).hasKing() && (
+                  <div className={styles.crown} />
+                )}
+              </div>
             )}
           </li>
         );

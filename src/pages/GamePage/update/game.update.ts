@@ -85,9 +85,6 @@ function makeMoveAndMaybeBecomeKing(
   const [fromX, fromY] = from;
   const [toX, toY] = to;
 
-  let square = board[fromY][fromX];
-  const squareTurn = getSquareMonitor(square).getTurn();
-
   const kingRowByTurn = {
     [TurnModel.black]: 0,
     [TurnModel.white]: 7,
@@ -97,6 +94,9 @@ function makeMoveAndMaybeBecomeKing(
     [TurnModel.black]: SquareModel.withBlackKing,
     [TurnModel.white]: SquareModel.withWhiteKing,
   };
+
+  let square = board[fromY][fromX];
+  const squareTurn = getSquareMonitor(square).getTurn();
 
   if (squareTurn && kingRowByTurn[squareTurn] === toY) {
     square = kingByTurn[squareTurn];

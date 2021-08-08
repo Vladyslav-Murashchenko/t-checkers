@@ -15,6 +15,9 @@
 }
 
 .checker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   content: "";
   width: 25px;
@@ -47,6 +50,40 @@
   background: darkblue;
 }
 
-.king {
-  box-shadow: 0 0 0 3px yellow;
+.crown {
+  --size: 7px;
+  --bottom-border: calc(var(--size) * 3 / 5);
+  --side-border: calc(var(--size) * 2 / 5);
+  position: relative;
+  box-sizing: border-box;
+  width: calc(var(--size) * 2);
+  height: var(--size);
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+
+  border-bottom: var(--size) solid yellow;
+}
+
+.crown::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--size) * -1);
+  bottom: calc(var(--size) * -1);
+
+  border-left: var(--side-border) solid yellow;
+  border-bottom: var(--bottom-border) solid yellow;
+  border-right: var(--side-border) solid transparent;
+  border-top: var(--side-border) solid transparent;
+}
+
+.crown::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--size) * -1);
+  bottom: calc(var(--size) * -1);
+
+  border-right: var(--side-border) solid yellow;
+  border-bottom: var(--bottom-border) solid yellow;
+  border-left: var(--side-border) solid transparent;
+  border-top: var(--side-border) solid transparent;
 }
