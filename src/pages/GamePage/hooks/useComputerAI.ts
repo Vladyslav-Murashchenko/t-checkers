@@ -8,9 +8,10 @@ import {
 import { Dispatch } from "./useGameDispatch";
 
 const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
+  const { turn, jumpingCheckerCoords, board } = game;
+
   useEffect(() => {
-    const { turn, jumpingCheckerCoords, board } = game;
-    if (game.turn === Side.white) {
+    if (turn === Side.white) {
       const { possibleJumps, possibleMoves } = findAllMovingsForSide({
         side: turn,
         board,
@@ -31,7 +32,7 @@ const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
         clearTimeout(timer);
       };
     }
-  }, [game.turn, game.jumpingCheckerCoords]);
+  }, [turn, jumpingCheckerCoords]);
 };
 
 export default useComputerAI;

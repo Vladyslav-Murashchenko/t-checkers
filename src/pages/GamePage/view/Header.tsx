@@ -21,10 +21,10 @@ const Header: FC<HeaderProps> = ({ turn, status }) => {
 
 export default Header;
 
-function deriveMessage(status: Status, turn: Side) {
+function deriveMessage(status: Status, side: Side) {
   if (status === Status.finished) {
-    return `game finished, ${turn} won!`;
+    return `game finished, ${side} won!`;
   }
 
-  return `${turn} turn to move!`;
+  return `${side} turn to move!`;
 }

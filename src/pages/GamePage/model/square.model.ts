@@ -37,7 +37,7 @@ export const checkSquare = (square: SquareModel) => {
 export const getSquareMonitor = (square: SquareModel) => {
   return Object.assign(checkSquare(square), {
     getSide(): Side | null {
-      const turnBySquare = {
+      const sideBySquare = {
         [SquareModel.withBlackMan]: Side.black,
         [SquareModel.withBlackKing]: Side.black,
         [SquareModel.withWhiteMan]: Side.white,
@@ -46,7 +46,7 @@ export const getSquareMonitor = (square: SquareModel) => {
         [SquareModel.emptyBlack]: null,
       };
 
-      return turnBySquare[square];
+      return sideBySquare[square];
     },
   });
 };
