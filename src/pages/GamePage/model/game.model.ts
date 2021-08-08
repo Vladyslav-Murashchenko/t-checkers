@@ -1,5 +1,6 @@
-import { initialBoardData, TurnModel } from "./board.model";
+import { initialBoardData } from "./board.model";
 import { nullCoords } from "./coords.model";
+import { TurnModel } from "./turn.model";
 
 export const initialGameModel = {
   turn: TurnModel.black,

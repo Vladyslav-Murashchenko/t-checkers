@@ -7,11 +7,7 @@ import {
 } from "./coords.model";
 import { GameModel } from "./game.model";
 import { SquareModel } from "./square.model";
-
-export enum TurnModel {
-  white = "white",
-  black = "black",
-}
+import { TurnModel } from "./turn.model";
 
 type BlackSquare =
   | SquareModel.emptyBlack

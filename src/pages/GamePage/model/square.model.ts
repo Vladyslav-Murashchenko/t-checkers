@@ -1,4 +1,4 @@
-import { TurnModel } from "./board.model";
+import { TurnModel } from "./turn.model";
 
 export enum SquareModel {
   white = "_",
