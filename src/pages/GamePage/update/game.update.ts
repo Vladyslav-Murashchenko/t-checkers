@@ -11,9 +11,10 @@ import {
   nullCoords,
   getSquareMonitor,
   Status,
+  GameModel,
+  hasSideMovings,
 } from "../model";
 import whenStatus from "utils/whenStatus";
-import { hasSideMovings } from "../model/game.model";
 
 const opponentFor = {
   [Side.black]: Side.white,
@@ -47,6 +48,15 @@ const gameSlice = createSlice({
       const to = action.payload;
 
       state.board = makeMoveAndMaybeBecomeKing(from, to, state.board);
+
+      const shouldFinish = shouldFinishGame(state);
+
+      if (shouldFinish) {
+        state.status = Status.finished;
+        state.activeCheckerCoords = nullCoords;
+        return;
+      }
+
       state.turn = opponentFor[state.turn];
       state.activeCheckerCoords = nullCoords;
     }),
@@ -69,22 +79,17 @@ const gameSlice = createSlice({
         return;
       }
 
-      const sideOfOpponent = opponentFor[state.turn];
-      const hasOpponentMovings = hasSideMovings({
-        side: sideOfOpponent,
-        board: updatedBoard,
-        jumpingCheckerCoords: nullCoords,
-      });
+      const shouldFinish = shouldFinishGame(state);
 
-      if (hasOpponentMovings) {
-        state.turn = sideOfOpponent;
+      if (shouldFinish) {
+        state.status = Status.finished;
         state.activeCheckerCoords = nullCoords;
-        state.jumpingCheckerCoords = nullCoords;
         return;
       }
 
-      state.status = Status.finished;
+      state.turn = opponentFor[state.turn];
       state.activeCheckerCoords = nullCoords;
+      state.jumpingCheckerCoords = nullCoords;
     }),
   },
 });
@@ -129,7 +134,7 @@ function makeMoveAndMaybeBecomeKing(
   });
 }
 
-export function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
+function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
   const [toX, toY] = to;
   const [fromX, fromY] = from;
   const deltaX = toX - fromX;
@@ -139,4 +144,16 @@ export function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
   const stepBackY = toY - Math.sign(deltaY);
 
   return [stepBackX, stepBackY];
+}
+
+function shouldFinishGame(game: GameModel) {
+  const sideOfOpponent = opponentFor[game.turn];
+
+  const hasOpponentMovings = hasSideMovings({
+    side: sideOfOpponent,
+    board: game.board,
+    jumpingCheckerCoords: nullCoords,
+  });
+
+  return !hasOpponentMovings;
 }

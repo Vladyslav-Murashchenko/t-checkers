@@ -1,5 +1,9 @@
 export type { GameModel } from "./game.model";
-export { initialGameModel, findAllMovingsForSide } from "./game.model";
+export {
+  initialGameModel,
+  findAllMovingsForSide,
+  hasSideMovings,
+} from "./game.model";
 
 export type { RankModel, BoardData } from "./board.model";
 
