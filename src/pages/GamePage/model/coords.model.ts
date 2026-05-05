@@ -1,4 +1,4 @@
-import zip from "utils/zip";
+import zip from "../../../utils/zip";
 import { BoardData } from "./board.model";
 import { getSquareMonitor } from "./square.model";
 

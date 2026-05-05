@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import cx from "utils/cx";
+import cx from "../../../utils/cx";
 import { checkCoords, Coords, GameModel, MoveSnapshot } from "../model";
 import Rank from "./Rank";
 
