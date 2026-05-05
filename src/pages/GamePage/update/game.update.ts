@@ -149,11 +149,11 @@ function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
 function shouldFinishGame(game: GameModel) {
   const sideOfOpponent = opponentFor[game.turn];
 
-  const hasOpponentMovings = hasSideMoves({
+  const hasOpponentMoves = hasSideMoves({
     side: sideOfOpponent,
     board: game.board,
     jumpingCheckerCoords: nullCoords,
   });
 
-  return !hasOpponentMovings;
+  return !hasOpponentMoves;
 }
