@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { GameModel, findAllMovingsForSide, Side } from "../model";
+import { GameModel, findAllMovesForSide, Side } from "../model";
 import {
   checkerJumped,
-  checkerMoved,
+  checkerSlid,
   checkerTouchedByComputer,
 } from "../update";
 import { Dispatch } from "./useGameDispatch";
@@ -12,19 +12,19 @@ const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
 
   useEffect(() => {
     if (turn === Side.white) {
-      const { possibleJumps, possibleMoves } = findAllMovingsForSide({
+      const { possibleJumps, possibleSlides } = findAllMovesForSide({
         side: turn,
         board,
         jumpingCheckerCoords,
       });
 
-      const randomMove = getRandomItem([...possibleJumps, ...possibleMoves]);
+      const randomMove = getRandomItem([...possibleJumps, ...possibleSlides]);
 
       dispatch(checkerTouchedByComputer(randomMove.from));
 
       let timer = setTimeout(() => {
         const isJump = possibleJumps.includes(randomMove);
-        const finalAction = isJump ? checkerJumped : checkerMoved;
+        const finalAction = isJump ? checkerJumped : checkerSlid;
         dispatch(finalAction(randomMove.to));
       }, 800);
 

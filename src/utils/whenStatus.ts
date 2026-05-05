@@ -10,7 +10,7 @@ interface CR<S, A, R> {
  * @description
  * simplify creating state machines with reduxjs/toolkit.
  * @example
- *   checkerMoved: (state, action: PayloadAction<Coords>) => {
+ *   checkerSlid: (state, action: PayloadAction<Coords>) => {
  *     if (state.status === Status.playing) {
  *        // ...
  *     }
@@ -24,7 +24,7 @@ interface CR<S, A, R> {
  *   // is equal to:
  *   const whenPlaying = whenStatus((status) => status === Status.playing);
  *   // ...
- *   checkerMoved: whenPlaying((state, action: PayloadAction<Coords>) => {
+ *   checkerSlid: whenPlaying((state, action: PayloadAction<Coords>) => {
  *     // ...
  *   }),
  *   checkerJumped: whenPlaying((state, action: PayloadAction<Coords>) => {

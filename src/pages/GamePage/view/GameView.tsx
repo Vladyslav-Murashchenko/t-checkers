@@ -4,7 +4,7 @@ import { checkCoords, Coords, GameModel, MoveSnapshot } from "../model";
 import Rank from "./Rank";
 
 import styles from "./GameView.module.css";
-import { findAllMovingsForSide } from "../model";
+import { findAllMovesForSide } from "../model";
 import Header from "./Header";
 
 type GameViewProps = {
@@ -15,13 +15,13 @@ const GameView: FC<GameViewProps> = ({ game }) => {
   const { turn, status, board, activeCheckerCoords, jumpingCheckerCoords } =
     game;
 
-  const { possibleJumps, possibleMoves } = findAllMovingsForSide({
+  const { possibleJumps, possibleSlides } = findAllMovesForSide({
     side: turn,
     board,
     jumpingCheckerCoords,
   });
 
-  const possibleMoveTargets = possibleMoves
+  const possibleSlideTargets = possibleSlides
     .filter(currentCoordsEquals(activeCheckerCoords))
     .map(getTarget);
 
@@ -40,7 +40,7 @@ const GameView: FC<GameViewProps> = ({ game }) => {
                 <Rank
                   rank={rank}
                   rankIndex={index}
-                  possibleMoveTargets={possibleMoveTargets}
+                  possibleSlideTargets={possibleSlideTargets}
                   possibleJumpTargets={possibleJumpTargets}
                   activeCheckerCoords={activeCheckerCoords}
                 />

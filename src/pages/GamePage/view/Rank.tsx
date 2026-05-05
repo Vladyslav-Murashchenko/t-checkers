@@ -9,14 +9,14 @@ import {
   checkCoords,
   createCoords,
 } from "../model";
-import { checkerTouchedByPlayer, checkerMoved, checkerJumped } from "../update";
+import { checkerTouchedByPlayer, checkerSlid, checkerJumped } from "../update";
 
 import styles from "./Rank.module.css";
 
 type RankProps = {
   rank: RankModel;
   rankIndex: number;
-  possibleMoveTargets: Coords[];
+  possibleSlideTargets: Coords[];
   possibleJumpTargets: Coords[];
   activeCheckerCoords: Coords;
 };
@@ -24,7 +24,7 @@ type RankProps = {
 const Rank: FC<RankProps> = ({
   rank,
   rankIndex,
-  possibleMoveTargets,
+  possibleSlideTargets,
   possibleJumpTargets,
   activeCheckerCoords,
 }) => {
@@ -39,8 +39,8 @@ const Rank: FC<RankProps> = ({
   const handleSquareMouseUp = (squareIndex: number) => () => {
     const coords = createCoords(squareIndex, rankIndex);
 
-    if (checkCoords(coords).toBeIn(possibleMoveTargets)) {
-      dispatch(checkerMoved(coords));
+    if (checkCoords(coords).toBeIn(possibleSlideTargets)) {
+      dispatch(checkerSlid(coords));
     }
 
     if (checkCoords(coords).toBeIn(possibleJumpTargets)) {
@@ -55,7 +55,7 @@ const Rank: FC<RankProps> = ({
           square,
           squareIndex,
           rankIndex,
-          possibleMoveTargets,
+          possibleSlideTargets,
           possibleJumpTargets,
           activeCheckerCoords,
         });
@@ -97,7 +97,7 @@ type DeriveSquareClassNameParams = {
   square: SquareModel;
   squareIndex: number;
   rankIndex: number;
-  possibleMoveTargets: Coords[];
+  possibleSlideTargets: Coords[];
   possibleJumpTargets: Coords[];
   activeCheckerCoords: Coords;
 };
@@ -105,19 +105,19 @@ function deriveSquareClassName({
   square,
   squareIndex,
   rankIndex,
-  possibleMoveTargets,
+  possibleSlideTargets,
   possibleJumpTargets,
   activeCheckerCoords,
 }: DeriveSquareClassNameParams): string {
   const coords = createCoords(squareIndex, rankIndex);
 
-  const isPossibleTarget = checkCoords(coords).toBeIn(possibleMoveTargets);
+  const isPossibleSlide = checkCoords(coords).toBeIn(possibleSlideTargets);
   const isPossibleJump = checkCoords(coords).toBeIn(possibleJumpTargets);
   const isActive = checkCoords(coords).areEquals(activeCheckerCoords);
 
   return cx(
     checkSquare(square).isWhite() ? whiteSquare : blackSquare,
-    isPossibleTarget && styles.moveIsPossible,
+    isPossibleSlide && styles.slideIsPossible,
     isPossibleJump && styles.jumpIsPossible,
     isActive && styles.squareActive,
   );

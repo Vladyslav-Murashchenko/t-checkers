@@ -12,7 +12,7 @@ import {
   getSquareMonitor,
   Status,
   GameModel,
-  hasSideMovings,
+  hasSideMoves,
 } from "../model";
 import whenStatus from "../../../utils/whenStatus";
 
@@ -43,7 +43,7 @@ const gameSlice = createSlice({
         }
       },
     ),
-    checkerMoved: whenPlaying((state, action: PayloadAction<Coords>) => {
+    checkerSlid: whenPlaying((state, action: PayloadAction<Coords>) => {
       const from = state.activeCheckerCoords;
       const to = action.payload;
 
@@ -99,7 +99,7 @@ export const {
   restart,
   checkerTouchedByPlayer,
   checkerTouchedByComputer,
-  checkerMoved,
+  checkerSlid,
   checkerJumped,
 } = gameSlice.actions;
 
@@ -149,7 +149,7 @@ function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
 function shouldFinishGame(game: GameModel) {
   const sideOfOpponent = opponentFor[game.turn];
 
-  const hasOpponentMovings = hasSideMovings({
+  const hasOpponentMovings = hasSideMoves({
     side: sideOfOpponent,
     board: game.board,
     jumpingCheckerCoords: nullCoords,

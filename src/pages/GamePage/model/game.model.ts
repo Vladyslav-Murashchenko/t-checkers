@@ -20,38 +20,38 @@ export const initialGameModel = {
 
 export type GameModel = typeof initialGameModel;
 
-type MovingsParams = {
+type MoveParams = {
   jumpingCheckerCoords: Coords;
   side: Side;
   board: BoardData;
 };
 
-export function hasSideMovings(params: MovingsParams) {
-  const { possibleJumps, possibleMoves } = findAllMovingsForSide(params);
+export function hasSideMoves(params: MoveParams) {
+  const { possibleJumps, possibleSlides } = findAllMovesForSide(params);
 
-  return !![...possibleJumps, ...possibleMoves].length;
+  return !![...possibleJumps, ...possibleSlides].length;
 }
 
-export function findAllMovingsForSide(params: MovingsParams) {
+export function findAllMovesForSide(params: MoveParams) {
   const { side, board } = params;
   const possibleJumps = findAllJumpsForSide(params);
 
   if (possibleJumps?.length) {
     return {
       possibleJumps,
-      possibleMoves: [] as MoveSnapshot[],
+      possibleSlides: [] as MoveSnapshot[],
     };
   }
 
   return {
     possibleJumps: [] as MoveSnapshot[],
-    possibleMoves: findAllMovesForSide(side, board),
+    possibleSlides: findAllSlidesForSide(side, board),
   };
 }
 
-function findAllMovesForSide(side: Side, board: BoardData) {
+function findAllSlidesForSide(side: Side, board: BoardData) {
   return findAllSideCheckers(side, board).flatMap(
-    (coords) => getCoordsMonitor(coords, board)?.findMoves() ?? [],
+    (coords) => getCoordsMonitor(coords, board)?.findSlides() ?? [],
   );
 }
 
@@ -59,7 +59,7 @@ function findAllJumpsForSide({
   jumpingCheckerCoords,
   side,
   board,
-}: MovingsParams) {
+}: MoveParams) {
   if (checkCoords(jumpingCheckerCoords).areEquals(nullCoords)) {
     return findAllSideCheckers(side, board).flatMap(
       (coords) => getCoordsMonitor(coords, board)?.findJumps() ?? [],

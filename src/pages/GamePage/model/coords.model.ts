@@ -35,12 +35,12 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
   const squareMonitor = getSquareMonitor(square);
 
   const self = Object.assign(squareMonitor, {
-    findMoves(): MoveSnapshot[] {
+    findSlides(): MoveSnapshot[] {
       const nextBlackSquares: Coords[] = findCoordsOnDistance(1, coords, board);
 
       return nextBlackSquares
         .filter((next) => getCoordsMonitor(next, board)?.isEmptyBlack())
-        .map(createMoveShapshot(coords));
+        .map(createMoveSnapshot(coords));
     },
     findJumps(): MoveSnapshot[] {
       const maybeOpponentCoords = findCoordsOnDistance(1, coords, board);
@@ -64,7 +64,7 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
           return false;
         })
         .map(([_, emptyCoords]) => emptyCoords)
-        .map(createMoveShapshot(coords));
+        .map(createMoveSnapshot(coords));
     },
   });
 
@@ -131,7 +131,7 @@ function move(
   return [x + deltaX, y + deltaY];
 }
 
-function createMoveShapshot(from: Coords) {
+function createMoveSnapshot(from: Coords) {
   return (to: Coords): MoveSnapshot => ({
     from,
     to,

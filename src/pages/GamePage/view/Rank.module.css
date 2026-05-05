@@ -34,7 +34,7 @@
   display: flex;
 }
 
-.moveIsPossible {
+.slideIsPossible {
   background: blue;
 }
 
