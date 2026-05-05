@@ -1,5 +1,5 @@
 import { FC } from "react";
-import cx from "utils/cx";
+import cx from "../../../utils/cx";
 import useGameDispatch from "../hooks/useGameDispatch";
 import {
   RankModel,

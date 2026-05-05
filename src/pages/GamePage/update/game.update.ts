@@ -14,7 +14,7 @@ import {
   GameModel,
   hasSideMovings,
 } from "../model";
-import whenStatus from "utils/whenStatus";
+import whenStatus from "../../../utils/whenStatus";
 
 const opponentFor = {
   [Side.black]: Side.white,

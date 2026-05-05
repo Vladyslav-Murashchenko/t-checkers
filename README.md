@@ -4,22 +4,28 @@
 
 Understanding of [Checkers Terminology](https://www.checkershistory.com/a-glossary-of-checkers.html) and [Elm Arhitecture](https://guide.elm-lang.org/architecture/) can be useful for understanding this codebase. You can find more details about the approach here: **/src/pages/GamePage/README.md**. Please, read that readme also.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project uses [Vite](https://vite.dev/) with npm.
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+### `npm run dev`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Starts the Vite development server.
 
-### `yarn build`
+### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the default `dist` folder.
+
+### `npm run preview`
+
+Serves the production build locally using Vite.
+
+### `npm run typecheck`
+
+Runs the standalone TypeScript type check.
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can learn more in the [Vite documentation](https://vite.dev/guide/).

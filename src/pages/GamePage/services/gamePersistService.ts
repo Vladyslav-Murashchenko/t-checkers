@@ -1,7 +1,7 @@
 import { GameModel } from "../model";
 
 const gamePersistService = {
-  initReducer: (state: GameModel) => {
+  initReducer: (state: GameModel): GameModel => {
     const persistedState = localStorage.getItem("game");
 
     if (persistedState) {
