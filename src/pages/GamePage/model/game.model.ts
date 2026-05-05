@@ -1,5 +1,5 @@
 import { getCoordsMonitor } from "./coords.model";
-import { BoardData, initialBoardData } from "./board.model";
+import { BoardModel, initialBoard } from "./board.model";
 import {
   checkCoords,
   Coords,
@@ -15,7 +15,7 @@ export const initialGameModel = {
   turn: Side.black,
   jumpingCheckerCoords: nullCoords,
   activeCheckerCoords: nullCoords,
-  board: initialBoardData,
+  board: initialBoard,
 };
 
 export type GameModel = typeof initialGameModel;
@@ -23,7 +23,7 @@ export type GameModel = typeof initialGameModel;
 type MoveParams = {
   jumpingCheckerCoords: Coords;
   side: Side;
-  board: BoardData;
+  board: BoardModel;
 };
 
 export function hasSideMoves(params: MoveParams) {
@@ -49,7 +49,7 @@ export function findAllMovesForSide(params: MoveParams) {
   };
 }
 
-function findAllSlidesForSide(side: Side, board: BoardData) {
+function findAllSlidesForSide(side: Side, board: BoardModel) {
   return findAllSideCheckers(side, board).flatMap(
     (coords) => getCoordsMonitor(coords, board)?.findSlides() ?? [],
   );
@@ -69,7 +69,7 @@ function findAllJumpsForSide({
   return getCoordsMonitor(jumpingCheckerCoords, board)?.findJumps() ?? [];
 }
 
-function findAllSideCheckers(side: Side, board: BoardData) {
+function findAllSideCheckers(side: Side, board: BoardModel) {
   return board
     .flatMap((rank, rankIndex) => {
       return rank.map((_, squareIndex) => {

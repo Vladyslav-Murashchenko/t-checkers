@@ -1,5 +1,5 @@
 import zip from "../../../utils/zip";
-import { BoardData } from "./board.model";
+import { BoardModel } from "./board.model";
 import { getSquareMonitor } from "./square.model";
 
 export type Coords<X = number, Y = number> = [X, Y];
@@ -24,7 +24,7 @@ export type MoveSnapshot = {
   to: Coords;
 };
 
-export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
+export const getCoordsMonitor = (coords: Coords, board: BoardModel) => {
   const [x, y] = coords;
   const square = board[y]?.[x] ?? null;
 
@@ -73,7 +73,7 @@ export const getCoordsMonitor = (coords: Coords, board: BoardData) => {
 
 function getForbiddenDirection(
   coords: Coords,
-  board: BoardData,
+  board: BoardModel,
 ): "top" | "bottom" | null {
   const coordsOnBoard = getCoordsMonitor(coords, board);
 
@@ -87,7 +87,7 @@ function getForbiddenDirection(
 function findCoordsOnDistance(
   distance: number,
   coords: Coords,
-  board: BoardData,
+  board: BoardModel,
 ): Coords[] {
   const forbiddenDirection = getForbiddenDirection(coords, board);
   const coordsOnDiagonals: Coords[] = [];

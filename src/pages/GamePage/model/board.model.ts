@@ -7,15 +7,15 @@ type BlackSquare =
   | SquareModel.withBlackMan
   | SquareModel.withBlackKing;
 
-export type BoardData<X = BlackSquare, O = SquareModel.white> = [
-  [O, X, O, X, O, X, O, X],
-  [X, O, X, O, X, O, X, O],
-  [O, X, O, X, O, X, O, X],
-  [X, O, X, O, X, O, X, O],
-  [O, X, O, X, O, X, O, X],
-  [X, O, X, O, X, O, X, O],
-  [O, X, O, X, O, X, O, X],
-  [X, O, X, O, X, O, X, O],
+export type BoardModel<B = BlackSquare, W = SquareModel.white> = [
+  [W, B, W, B, W, B, W, B],
+  [B, W, B, W, B, W, B, W],
+  [W, B, W, B, W, B, W, B],
+  [B, W, B, W, B, W, B, W],
+  [W, B, W, B, W, B, W, B],
+  [B, W, B, W, B, W, B, W],
+  [W, B, W, B, W, B, W, B],
+  [B, W, B, W, B, W, B, W],
 ];
 
 export type RankModel<S = SquareModel> = [S, S, S, S, S, S, S, S];
@@ -25,7 +25,7 @@ const W = SquareModel.withWhiteMan;
 const B = SquareModel.withBlackMan;
 const E = SquareModel.emptyBlack;
 
-export const initialBoardData: BoardData = [
+export const initialBoard: BoardModel = [
   [_, W, _, W, _, W, _, W],
   [W, _, W, _, W, _, W, _],
   [_, W, _, W, _, W, _, W],

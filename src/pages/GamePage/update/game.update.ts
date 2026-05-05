@@ -2,7 +2,7 @@ import { createNextState, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import {
-  BoardData,
+  BoardModel,
   initialGameModel,
   SquareModel,
   Side,
@@ -106,8 +106,8 @@ export const {
 function makeMoveAndMaybeBecomeKing(
   from: Coords,
   to: Coords,
-  board: BoardData,
-): BoardData {
+  board: BoardModel,
+): BoardModel {
   const [fromX, fromY] = from;
   const [toX, toY] = to;
 

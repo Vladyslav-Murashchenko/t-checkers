@@ -5,7 +5,7 @@ export {
   hasSideMoves,
 } from "./game.model";
 
-export type { RankModel, BoardData } from "./board.model";
+export type { RankModel, BoardModel } from "./board.model";
 
 export { checkSquare, SquareModel, getSquareMonitor } from "./square.model";
 
