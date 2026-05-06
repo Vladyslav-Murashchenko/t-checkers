@@ -1,10 +1,10 @@
-import { getCoordsMonitor } from "./coords.model";
 import { BoardModel, initialBoard } from "./board.model";
+import { getCoordsMonitor } from "./coords.model";
 import {
-  checkCoords,
   Coords,
-  createCoords,
   MoveSnapshot,
+  checkCoords,
+  createCoords,
   nullCoords,
 } from "./coords.model";
 import { Side } from "./side.model";

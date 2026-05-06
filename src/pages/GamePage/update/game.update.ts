@@ -1,20 +1,20 @@
 import { createNextState, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+import whenStatus from "../../../utils/whenStatus";
 import {
   BoardModel,
-  initialGameModel,
-  SquareModel,
-  Side,
-  getCoordsMonitor,
   Coords,
-  nullCoords,
-  getSquareMonitor,
-  Status,
   GameModel,
+  Side,
+  SquareModel,
+  Status,
+  getCoordsMonitor,
+  getSquareMonitor,
   hasSideMoves,
+  initialGameModel,
+  nullCoords,
 } from "../model";
-import whenStatus from "../../../utils/whenStatus";
 
 const opponentFor = {
   [Side.black]: Side.white,

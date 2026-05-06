@@ -1,16 +1,16 @@
 import { FC } from "react";
+
 import cx from "../../../utils/cx";
 import useGameDispatch from "../hooks/useGameDispatch";
 import {
+  Coords,
   RankModel,
   SquareModel,
-  Coords,
-  checkSquare,
   checkCoords,
+  checkSquare,
   createCoords,
 } from "../model";
-import { checkerTouchedByPlayer, checkerSlid, checkerJumped } from "../update";
-
+import { checkerJumped, checkerSlid, checkerTouchedByPlayer } from "../update";
 import styles from "./Rank.module.css";
 
 type RankProps = {

@@ -1,8 +1,8 @@
 import { FC } from "react";
+
 import useGameDispatch from "../hooks/useGameDispatch";
 import { Side, Status } from "../model";
 import { restart } from "../update";
-
 import styles from "./Header.module.css";
 
 type HeaderProps = {

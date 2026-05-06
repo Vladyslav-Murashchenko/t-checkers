@@ -1,11 +1,11 @@
 import type { FC } from "react";
-import cx from "../../../utils/cx";
-import { checkCoords, Coords, GameModel, MoveSnapshot } from "../model";
-import Rank from "./Rank";
 
-import styles from "./GameView.module.css";
+import cx from "../../../utils/cx";
+import { Coords, GameModel, MoveSnapshot, checkCoords } from "../model";
 import { findAllMovesForSide } from "../model";
+import styles from "./GameView.module.css";
 import Header from "./Header";
+import Rank from "./Rank";
 
 type GameViewProps = {
   game: GameModel;

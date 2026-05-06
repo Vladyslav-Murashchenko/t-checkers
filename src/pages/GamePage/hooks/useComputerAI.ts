@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { GameModel, findAllMovesForSide, Side } from "../model";
+
+import { GameModel, Side, findAllMovesForSide } from "../model";
 import {
   checkerJumped,
   checkerSlid,

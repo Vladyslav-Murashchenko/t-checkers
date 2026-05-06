@@ -1,11 +1,11 @@
 import { useEffect, useReducer } from "react";
 
-import { initialGameModel } from "./model";
-import GameView from "./view";
-import gameReducer from "./update";
-import { GameDispatchContent } from "./hooks/useGameDispatch";
 import useComputerAI from "./hooks/useComputerAI";
+import { GameDispatchContent } from "./hooks/useGameDispatch";
+import { initialGameModel } from "./model";
 import gamePersistService from "./services/gamePersistService";
+import gameReducer from "./update";
+import GameView from "./view";
 
 const Game = () => {
   const [game, dispatch] = useReducer(
