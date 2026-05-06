@@ -1,7 +1,0 @@
-{
-  "extends": ["react-app", "plugin:import/typescript"],
-  "plugins": ["import"],
-  "rules": {
-    "import/no-cycle": "error"
-  }
-}
