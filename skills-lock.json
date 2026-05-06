@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "feature-garden": {
+      "source": "Vladyslav-Murashchenko/feature-garden",
+      "sourceType": "github",
+      "skillPath": "skills/feature-garden/SKILL.md",
+      "computedHash": "66eadacb1f6aa0537b4dbe567a3f711cd8420b5a43163f97b36e12cbc6bbc616"
+    }
+  }
+}
