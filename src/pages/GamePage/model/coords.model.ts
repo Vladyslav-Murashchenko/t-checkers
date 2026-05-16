@@ -52,11 +52,12 @@ export const CoordsMonitor = (coords: Coords, board: BoardModel) => {
       const pairs = zip(maybeOpponentCoords, maybeEmptyCoords);
 
       return pairs
-        .filter(([shouldBeOpponent, shouldBeEmpty]) => {
-          if (!shouldBeOpponent || !shouldBeEmpty) {
-            return false;
-          }
+        .filter((pair): pair is [Coords, Coords] => {
+          const [shouldBeOpponent, shouldBeEmpty] = pair;
 
+          return shouldBeOpponent !== null && shouldBeEmpty !== null;
+        })
+        .filter(([shouldBeOpponent, shouldBeEmpty]) => {
           const opponentCoords = CoordsMonitor(shouldBeOpponent, board);
           const emptyCoords = CoordsMonitor(shouldBeEmpty, board);
 
@@ -68,7 +69,6 @@ export const CoordsMonitor = (coords: Coords, board: BoardModel) => {
           return hasOpponentChecker && hasEmptySquare;
         })
         .map(([, emptyCoords]) => emptyCoords)
-        .filter((targetCoords): targetCoords is Coords => targetCoords !== null)
         .map(createMoveSnapshot(coords));
     },
   };
