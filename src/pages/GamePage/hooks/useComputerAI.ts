@@ -23,8 +23,8 @@ const useComputerAI = (game: GameModel, dispatch: Dispatch) => {
 
       dispatch(checkerTouchedByComputer(randomMove.from));
 
-      let timer = setTimeout(() => {
-        const isJump = possibleJumps.includes(randomMove);
+      const timer = setTimeout(() => {
+        const isJump = possibleJumps.length > 0;
         const finalAction = isJump ? checkerJumped : checkerSlid;
         dispatch(finalAction(randomMove.to));
       }, 800);

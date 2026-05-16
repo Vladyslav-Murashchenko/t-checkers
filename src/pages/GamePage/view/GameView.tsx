@@ -1,6 +1,6 @@
+import cx from "@/utils/cx";
 import type { FC } from "react";
 
-import cx from "../../../utils/cx";
 import { Coords, GameModel, MoveSnapshot, checkCoords } from "../model";
 import { findAllMovesForSide } from "../model";
 import styles from "./GameView.module.css";
@@ -59,8 +59,11 @@ function getTarget({ to }: MoveSnapshot) {
   return to;
 }
 
-function currentCoordsEquals(activeCheckerCoords: Coords) {
+function currentCoordsEquals(activeCheckerCoords: Coords | null) {
   return ({ from }: MoveSnapshot) => {
-    return checkCoords(activeCheckerCoords).areEquals(from);
+    return (
+      activeCheckerCoords !== null &&
+      checkCoords(activeCheckerCoords).areEquals(from)
+    );
   };
 }

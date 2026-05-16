@@ -8,8 +8,8 @@ import {
   SquareModel,
   checkCoords,
   checkSquare,
-  createCoords,
 } from "../model";
+import { tryCreateCoords } from "../model/coords.model";
 import { checkerJumped, checkerSlid, checkerTouchedByPlayer } from "../update";
 import styles from "./Rank.module.css";
 
@@ -18,7 +18,7 @@ type RankProps = {
   rankIndex: number;
   possibleSlideTargets: Coords[];
   possibleJumpTargets: Coords[];
-  activeCheckerCoords: Coords;
+  activeCheckerCoords: Coords | null;
 };
 
 const Rank: FC<RankProps> = ({
@@ -31,13 +31,21 @@ const Rank: FC<RankProps> = ({
   const dispatch = useGameDispatch();
 
   const handleCheckerMouseDown = (squareIndex: number) => () => {
-    const coords = createCoords(squareIndex, rankIndex);
+    const coords = tryCreateCoords(squareIndex, rankIndex);
+
+    if (!coords) {
+      return;
+    }
 
     dispatch(checkerTouchedByPlayer(coords));
   };
 
   const handleSquareMouseUp = (squareIndex: number) => () => {
-    const coords = createCoords(squareIndex, rankIndex);
+    const coords = tryCreateCoords(squareIndex, rankIndex);
+
+    if (!coords) {
+      return;
+    }
 
     if (checkCoords(coords).toBeIn(possibleSlideTargets)) {
       dispatch(checkerSlid(coords));
@@ -99,7 +107,7 @@ type DeriveSquareClassNameParams = {
   rankIndex: number;
   possibleSlideTargets: Coords[];
   possibleJumpTargets: Coords[];
-  activeCheckerCoords: Coords;
+  activeCheckerCoords: Coords | null;
 };
 function deriveSquareClassName({
   square,
@@ -109,11 +117,17 @@ function deriveSquareClassName({
   possibleJumpTargets,
   activeCheckerCoords,
 }: DeriveSquareClassNameParams): string {
-  const coords = createCoords(squareIndex, rankIndex);
+  const coords = tryCreateCoords(squareIndex, rankIndex);
+
+  if (!coords) {
+    return whiteSquare;
+  }
 
   const isPossibleSlide = checkCoords(coords).toBeIn(possibleSlideTargets);
   const isPossibleJump = checkCoords(coords).toBeIn(possibleJumpTargets);
-  const isActive = checkCoords(coords).areEquals(activeCheckerCoords);
+  const isActive =
+    activeCheckerCoords !== null &&
+    checkCoords(coords).areEquals(activeCheckerCoords);
 
   return cx(
     checkSquare(square).isWhite() ? whiteSquare : blackSquare,

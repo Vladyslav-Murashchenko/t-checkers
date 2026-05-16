@@ -5,7 +5,7 @@ const gamePersistService = {
     const persistedState = localStorage.getItem("game");
 
     if (persistedState) {
-      return JSON.parse(persistedState);
+      return JSON.parse(persistedState) as GameModel;
     }
 
     return state;

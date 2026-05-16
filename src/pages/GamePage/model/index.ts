@@ -7,15 +7,10 @@ export {
 
 export type { RankModel, BoardModel } from "./board.model";
 
-export { checkSquare, SquareModel, getSquareMonitor } from "./square.model";
+export { checkSquare, SquareModel, SquareMonitor } from "./square.model";
 
 export type { Coords, MoveSnapshot } from "./coords.model";
-export {
-  nullCoords,
-  checkCoords,
-  createCoords,
-  getCoordsMonitor,
-} from "./coords.model";
+export { checkCoords, CoordsMonitor } from "./coords.model";
 
 export { Side } from "./side.model";
 

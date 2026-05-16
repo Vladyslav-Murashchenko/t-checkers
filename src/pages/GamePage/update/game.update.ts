@@ -5,15 +5,14 @@ import whenStatus from "../../../utils/whenStatus";
 import {
   BoardModel,
   Coords,
+  CoordsMonitor,
   GameModel,
   Side,
   SquareModel,
+  SquareMonitor,
   Status,
-  getCoordsMonitor,
-  getSquareMonitor,
   hasSideMoves,
   initialGameModel,
-  nullCoords,
 } from "../model";
 
 const opponentFor = {
@@ -21,6 +20,8 @@ const opponentFor = {
   [Side.white]: Side.black,
 };
 
+// TODO: get rid of whenStatus
+// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
 const whenPlaying = whenStatus((status) => status === Status.playing);
 
 const gameSlice = createSlice({
@@ -28,17 +29,19 @@ const gameSlice = createSlice({
   initialState: initialGameModel,
   reducers: {
     restart: () => initialGameModel,
-    checkerTouchedByComputer: whenPlaying((state, action) => {
-      state.activeCheckerCoords = action.payload;
-    }),
+    checkerTouchedByComputer: whenPlaying(
+      (state, action: PayloadAction<Coords>) => {
+        state.activeCheckerCoords = action.payload;
+      },
+    ),
     checkerTouchedByPlayer: whenPlaying(
       (state, action: PayloadAction<Coords>) => {
         const coords = action.payload;
         const { turn, board } = state;
 
-        const squareMonitor = getCoordsMonitor(coords, board);
+        const squareMonitor = CoordsMonitor(coords, board);
 
-        if (turn === Side.black && squareMonitor?.hasBlackChecker()) {
+        if (turn === Side.black && squareMonitor.hasBlackChecker()) {
           state.activeCheckerCoords = coords;
         }
       },
@@ -47,22 +50,30 @@ const gameSlice = createSlice({
       const from = state.activeCheckerCoords;
       const to = action.payload;
 
+      if (!from) {
+        return;
+      }
+
       state.board = makeMoveAndMaybeBecomeKing(from, to, state.board);
 
       const shouldFinish = shouldFinishGame(state);
 
       if (shouldFinish) {
         state.status = Status.finished;
-        state.activeCheckerCoords = nullCoords;
+        state.activeCheckerCoords = null;
         return;
       }
 
       state.turn = opponentFor[state.turn];
-      state.activeCheckerCoords = nullCoords;
+      state.activeCheckerCoords = null;
     }),
     checkerJumped: whenPlaying((state, action: PayloadAction<Coords>) => {
       const from = state.activeCheckerCoords;
       const to = action.payload;
+
+      if (!from) {
+        return;
+      }
 
       const [capturedX, capturedY] = getCoordsOfCapturedPiece(from, to);
       state.board[capturedY][capturedX] = SquareModel.emptyBlack;
@@ -70,8 +81,8 @@ const gameSlice = createSlice({
       const updatedBoard = makeMoveAndMaybeBecomeKing(from, to, state.board);
       state.board = updatedBoard;
 
-      const monitor = getCoordsMonitor(to, updatedBoard);
-      const hasJumps = !!monitor?.findJumps().length;
+      const monitor = CoordsMonitor(to, updatedBoard);
+      const hasJumps = !!monitor.findJumps().length;
 
       if (hasJumps) {
         state.activeCheckerCoords = to;
@@ -83,13 +94,13 @@ const gameSlice = createSlice({
 
       if (shouldFinish) {
         state.status = Status.finished;
-        state.activeCheckerCoords = nullCoords;
+        state.activeCheckerCoords = null;
         return;
       }
 
       state.turn = opponentFor[state.turn];
-      state.activeCheckerCoords = nullCoords;
-      state.jumpingCheckerCoords = nullCoords;
+      state.activeCheckerCoords = null;
+      state.jumpingCheckerCoords = null;
     }),
   },
 });
@@ -122,7 +133,7 @@ function makeMoveAndMaybeBecomeKing(
   };
 
   let square = board[fromY][fromX];
-  const squareSide = getSquareMonitor(square).getSide();
+  const squareSide = SquareMonitor(square).getSide();
 
   if (squareSide && kingRowBySide[squareSide] === toY) {
     square = kingBySide[squareSide];
@@ -143,7 +154,7 @@ function getCoordsOfCapturedPiece(from: Coords, to: Coords): Coords {
   const stepBackX = toX - Math.sign(deltaX);
   const stepBackY = toY - Math.sign(deltaY);
 
-  return [stepBackX, stepBackY];
+  return [stepBackX, stepBackY] as Coords;
 }
 
 function shouldFinishGame(game: GameModel) {
@@ -152,7 +163,7 @@ function shouldFinishGame(game: GameModel) {
   const hasOpponentMoves = hasSideMoves({
     side: sideOfOpponent,
     board: game.board,
-    jumpingCheckerCoords: nullCoords,
+    jumpingCheckerCoords: null,
   });
 
   return !hasOpponentMoves;

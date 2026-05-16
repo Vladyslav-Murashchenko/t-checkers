@@ -2,7 +2,7 @@
  * @description
  * util for composing classNames
  */
-const cx = (...classNames: any[]): string => {
+const cx = (...classNames: unknown[]): string => {
   return classNames
     .filter((className) => className && typeof className === "string")
     .join(" ");

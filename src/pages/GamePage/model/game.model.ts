@@ -1,27 +1,27 @@
 import { BoardModel, initialBoard } from "./board.model";
-import { getCoordsMonitor } from "./coords.model";
-import {
-  Coords,
-  MoveSnapshot,
-  checkCoords,
-  createCoords,
-  nullCoords,
-} from "./coords.model";
+import { CoordsMonitor, tryCreateCoords } from "./coords.model";
+import { Coords } from "./coords.model";
 import { Side } from "./side.model";
 import { Status } from "./status.model";
 
-export const initialGameModel = {
+export type GameModel = {
+  status: Status;
+  turn: Side;
+  jumpingCheckerCoords: Coords | null;
+  activeCheckerCoords: Coords | null;
+  board: BoardModel;
+};
+
+export const initialGameModel: GameModel = {
   status: Status.playing,
   turn: Side.black,
-  jumpingCheckerCoords: nullCoords,
-  activeCheckerCoords: nullCoords,
+  jumpingCheckerCoords: null,
+  activeCheckerCoords: null,
   board: initialBoard,
 };
 
-export type GameModel = typeof initialGameModel;
-
 type MoveParams = {
-  jumpingCheckerCoords: Coords;
+  jumpingCheckerCoords: Coords | null;
   side: Side;
   board: BoardModel;
 };
@@ -36,22 +36,22 @@ export function findAllMovesForSide(params: MoveParams) {
   const { side, board } = params;
   const possibleJumps = findAllJumpsForSide(params);
 
-  if (possibleJumps?.length) {
+  if (possibleJumps.length) {
     return {
       possibleJumps,
-      possibleSlides: [] as MoveSnapshot[],
+      possibleSlides: [],
     };
   }
 
   return {
-    possibleJumps: [] as MoveSnapshot[],
+    possibleJumps: [],
     possibleSlides: findAllSlidesForSide(side, board),
   };
 }
 
 function findAllSlidesForSide(side: Side, board: BoardModel) {
-  return findAllSideCheckers(side, board).flatMap(
-    (coords) => getCoordsMonitor(coords, board)?.findSlides() ?? [],
+  return findAllSideCheckers(side, board).flatMap((coords) =>
+    CoordsMonitor(coords, board).findSlides(),
   );
 }
 
@@ -60,21 +60,22 @@ function findAllJumpsForSide({
   side,
   board,
 }: MoveParams) {
-  if (checkCoords(jumpingCheckerCoords).areEquals(nullCoords)) {
-    return findAllSideCheckers(side, board).flatMap(
-      (coords) => getCoordsMonitor(coords, board)?.findJumps() ?? [],
+  if (jumpingCheckerCoords === null) {
+    return findAllSideCheckers(side, board).flatMap((coords) =>
+      CoordsMonitor(coords, board).findJumps(),
     );
   }
 
-  return getCoordsMonitor(jumpingCheckerCoords, board)?.findJumps() ?? [];
+  return CoordsMonitor(jumpingCheckerCoords, board).findJumps();
 }
 
 function findAllSideCheckers(side: Side, board: BoardModel) {
   return board
     .flatMap((rank, rankIndex) => {
       return rank.map((_, squareIndex) => {
-        return createCoords(rankIndex, squareIndex);
+        return tryCreateCoords(rankIndex, squareIndex);
       });
     })
-    .filter((coords) => getCoordsMonitor(coords, board)?.isOwnedBy(side));
+    .filter((coords): coords is Coords => coords !== null)
+    .filter((coords) => CoordsMonitor(coords, board).isOwnedBy(side));
 }

@@ -1,11 +1,17 @@
 import zip from "../../../utils/zip";
 import { BoardModel } from "./board.model";
-import { getSquareMonitor } from "./square.model";
+import { SquareMonitor } from "./square.model";
 
-export type Coords<X = number, Y = number> = [X, Y];
-export const nullCoords: Coords = [-1, -1];
+type Coord = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type Coords<X = Coord, Y = Coord> = [X, Y] & { __brand: "Coords" };
 
-export const createCoords = (x: number, y: number): Coords => [x, y];
+export const tryCreateCoords = (x: number, y: number): Coords | null => {
+  if (x < 0 || x > 7 || y < 0 || y > 7) {
+    return null;
+  }
+
+  return [x, y] as Coords;
+};
 
 export const checkCoords = (coords: Coords) => ({
   areEquals: (anotherCoords: Coords) => {
@@ -24,90 +30,80 @@ export type MoveSnapshot = {
   to: Coords;
 };
 
-export const getCoordsMonitor = (coords: Coords, board: BoardModel) => {
+export const CoordsMonitor = (coords: Coords, board: BoardModel) => {
   const [x, y] = coords;
-  const square = board[y]?.[x] ?? null;
 
-  if (!square) {
-    return null;
-  }
+  const square = board[y][x];
 
-  const squareMonitor = getSquareMonitor(square);
-
-  const self = Object.assign(squareMonitor, {
+  const self = {
+    ...SquareMonitor(square),
     findSlides(): MoveSnapshot[] {
-      const nextBlackSquares: Coords[] = findCoordsOnDistance(1, coords, board);
+      const nextBlackSquares = findCoordsOnDistance(1);
 
       return nextBlackSquares
-        .filter((next) => getCoordsMonitor(next, board)?.isEmptyBlack())
+        .filter((next): next is Coords => next !== null)
+        .filter((next) => CoordsMonitor(next, board).isEmptyBlack())
         .map(createMoveSnapshot(coords));
     },
     findJumps(): MoveSnapshot[] {
-      const maybeOpponentCoords = findCoordsOnDistance(1, coords, board);
-      const maybeEmptyCoords = findCoordsOnDistance(2, coords, board);
+      const maybeOpponentCoords = findCoordsOnDistance(1);
+      const maybeEmptyCoords = findCoordsOnDistance(2);
 
       const pairs = zip(maybeOpponentCoords, maybeEmptyCoords);
 
       return pairs
         .filter(([shouldBeOpponent, shouldBeEmpty]) => {
-          const opponentCoords = getCoordsMonitor(shouldBeOpponent, board);
-          const emptyCoords = getCoordsMonitor(shouldBeEmpty, board);
-
-          if (opponentCoords && emptyCoords && opponentCoords.hasChecker()) {
-            const hasEmptySquare = emptyCoords.isEmptyBlack();
-            const hasOpponentChecker =
-              opponentCoords.getSide() !== self.getSide();
-
-            return hasOpponentChecker && hasEmptySquare;
+          if (!shouldBeOpponent || !shouldBeEmpty) {
+            return false;
           }
 
-          return false;
+          const opponentCoords = CoordsMonitor(shouldBeOpponent, board);
+          const emptyCoords = CoordsMonitor(shouldBeEmpty, board);
+
+          const hasEmptySquare = emptyCoords.isEmptyBlack();
+          const hasOpponentChecker =
+            opponentCoords.hasChecker() &&
+            opponentCoords.getSide() !== self.getSide();
+
+          return hasOpponentChecker && hasEmptySquare;
         })
-        .map(([_, emptyCoords]) => emptyCoords)
+        .map(([, emptyCoords]) => emptyCoords)
+        .filter((targetCoords): targetCoords is Coords => targetCoords !== null)
         .map(createMoveSnapshot(coords));
     },
-  });
+  };
 
   return self;
+
+  function findCoordsOnDistance(distance: number): (Coords | null)[] {
+    const forbiddenDirection = getForbiddenDirection();
+    const coordsOnDiagonals: (Coords | null)[] = [];
+
+    if (forbiddenDirection !== "top") {
+      coordsOnDiagonals.push(
+        move(coords, "top", "right", distance),
+        move(coords, "top", "left", distance),
+      );
+    }
+
+    if (forbiddenDirection !== "bottom") {
+      coordsOnDiagonals.push(
+        move(coords, "bottom", "right", distance),
+        move(coords, "bottom", "left", distance),
+      );
+    }
+
+    return coordsOnDiagonals;
+  }
+
+  function getForbiddenDirection(): "top" | "bottom" | null {
+    if (self.hasKing()) {
+      return null;
+    }
+
+    return self.hasWhiteChecker() ? "top" : "bottom";
+  }
 };
-
-function getForbiddenDirection(
-  coords: Coords,
-  board: BoardModel,
-): "top" | "bottom" | null {
-  const coordsOnBoard = getCoordsMonitor(coords, board);
-
-  if (!coordsOnBoard || coordsOnBoard.hasKing()) {
-    return null;
-  }
-
-  return coordsOnBoard.hasWhiteChecker() ? "top" : "bottom";
-}
-
-function findCoordsOnDistance(
-  distance: number,
-  coords: Coords,
-  board: BoardModel,
-): Coords[] {
-  const forbiddenDirection = getForbiddenDirection(coords, board);
-  const coordsOnDiagonals: Coords[] = [];
-
-  if (forbiddenDirection !== "top") {
-    coordsOnDiagonals.push(
-      move(coords, "top", "right", distance),
-      move(coords, "top", "left", distance),
-    );
-  }
-
-  if (forbiddenDirection !== "bottom") {
-    coordsOnDiagonals.push(
-      move(coords, "bottom", "right", distance),
-      move(coords, "bottom", "left", distance),
-    );
-  }
-
-  return coordsOnDiagonals;
-}
 
 const signByDirection = {
   top: -1,
@@ -123,12 +119,13 @@ function move(
   dirY: Direction,
   dirX: Direction,
   distance: number,
-): Coords {
+): Coords | null {
   const deltaX = signByDirection[dirX] * distance;
   const deltaY = signByDirection[dirY] * distance;
 
   const [x, y] = coords;
-  return [x + deltaX, y + deltaY];
+
+  return tryCreateCoords(x + deltaX, y + deltaY);
 }
 
 function createMoveSnapshot(from: Coords) {
