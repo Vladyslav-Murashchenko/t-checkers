@@ -26,6 +26,11 @@ Serves the production build locally using Vite.
 
 Runs the standalone TypeScript type check.
 
+## Architecture
+
+This project follows the Feature Garden architecture:
+https://github.com/Vladyslav-Murashchenko/feature-garden
+
 ## Learn More
 
 You can learn more in the [Vite documentation](https://vite.dev/guide/).

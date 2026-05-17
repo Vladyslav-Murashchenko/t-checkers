@@ -1,0 +1,26 @@
+nestedFeatureThreshold: 5
+
+libraries:
+  domain:
+    intent: Platform-independent business models and logic.
+    rules:
+      can:
+        - Define domain types, entities, value objects, and pure business rules
+        - Implement validation and calculations that do not require IO
+        - Expose pure functions for domain behavior
+      cannot:
+        - Import UI, API, framework, routing, storage, or infrastructure code
+        - Perform IO: HTTP requests, localStorage, cookies, timers, random values, or logging
+        - Depend on React, browser APIs, server APIs, or external services
+
+  ui:
+    intent: Reusable UI primitives without application-specific knowledge.
+    rules:
+      can:
+        - Define reusable visual components, layout primitives, and design-system helpers
+        - Handle presentation-only state such as open, selected, expanded, or focused
+        - Accept data and callbacks through props
+      cannot:
+        - Import domain or feature modules
+        - Know business concepts, user flows, permissions, or server data shape
+        - Perform data fetching, mutations, routing decisions, or persistence
