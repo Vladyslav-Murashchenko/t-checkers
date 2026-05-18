@@ -1,6 +1,5 @@
 import { BoardModel, initialBoard } from "./board.model";
-import { CoordsMonitor, tryCreateCoords } from "./coords.model";
-import { Coords } from "./coords.model";
+import { Coords, CoordsMonitor, tryCreateCoords } from "./coords.model";
 import { Side } from "./side.model";
 import { Status } from "./status.model";
 
