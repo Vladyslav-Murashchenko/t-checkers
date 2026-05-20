@@ -7,9 +7,12 @@ import { configs as tsconfigs } from "typescript-eslint";
 export default defineConfig([
   {
     ignores: ["**", "!src/**"],
+  },
+  {
     languageOptions: {
       parserOptions: {
         projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
@@ -68,6 +71,14 @@ export default defineConfig([
                 to: {
                   type: ["feature", "shared-feature"],
                   internalPath: "!index.ts",
+                },
+              },
+            },
+            {
+              disallow: {
+                to: {
+                  type: ["lib-*"],
+                  internalPath: "_*",
                 },
               },
             },

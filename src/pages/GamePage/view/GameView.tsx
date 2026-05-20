@@ -1,8 +1,13 @@
 import cx from "@/utils/cx";
 import type { FC } from "react";
 
-import { Coords, GameModel, MoveSnapshot, checkCoords } from "../model";
-import { findAllMovesForSide } from "../model";
+import {
+  Coords,
+  GameModel,
+  MoveSnapshot,
+  checkCoords,
+  findAllMovesForSide,
+} from "../model";
 import styles from "./GameView.module.css";
 import Header from "./Header";
 import Rank from "./Rank";

@@ -1,5 +1,5 @@
 import { UnknownAction } from "@reduxjs/toolkit";
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 
 export type Dispatch = React.Dispatch<UnknownAction>;
 export const GameDispatchContent = createContext<Dispatch>(() => {});
